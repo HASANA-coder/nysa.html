@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nysa Fashion Boutique</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+.product-page{
+max-width:1000px;
+margin:auto;
+padding:40px 20px;
+}
+
+.product-page img{
+width:100%;
+max-width:450px;
+border-radius:15px;
+}
+
+.whatsapp-btn{
+display:inline-block;
+background:#25D366;
+color:white;
+padding:14px 25px;
+border-radius:10px;
+text-decoration:none;
+margin-top:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="productContainer" class="product-page">
+Loading...
+</div>
+
+<script>
+
+const sheetURL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2_JZ57ARZILvdOPZW_37jjFTtZPnG2kkQnxNLox2ceGJpgdyOPGKIO0qN2wM_6jb8CgjrPV648SRo/pub?output=csv";
+
+async function loadProduct(){
+
+const params =
+new URLSearchParams(window.location.search);
+
+const productId =
+params.get("id");
+
+const response =
+await fetch(sheetURL);
+
+const csv =
+await response.text();
+
+const rows =
+csv.trim().split("\n");
+
+for(let i=1;i<rows.length;i++){
+
+const cols =
+rows[i].split(",");
+
+if(cols[0] === productId){
+
+const message =
+encodeURIComponent(cols[6]);
+
+document.getElementById(
+"productContainer"
+).innerHTML = `
+
+<h1>${cols[1]}</h1>
+
+<img src="${cols[5]}">
+
+<h2>₹${cols[3]}</h2>
+
+<p>${cols[4]}</p>
+
+<a
+class="whatsapp-btn"
+target="_blank"
+href="https://wa.me/910000000000?text=${message}">
+Order on WhatsApp
+</a>
+
+`;
+
+break;
+}
+}
+
+}
+
+loadProduct();
+
+</script>
+
+</body>
+</html>
